@@ -1,6 +1,6 @@
 import { IsString, MinLength } from "class-validator";
 
-class MessageDto{
+export class MessageDto{
     
     @IsString()
     @MinLength(1)
