@@ -4,7 +4,7 @@ import { Socket } from 'socket.io';
 import { Server } from 'socket.io';
 import { MessageDto } from './dtos/message.dto';
 
-@WebSocketGateway({cors: true})
+@WebSocketGateway({ namespace: 'serverWS', cors: true})
 export class MesageWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() wss : Server;
@@ -12,6 +12,8 @@ export class MesageWsGateway implements OnGatewayConnection, OnGatewayDisconnect
   constructor(private readonly mesageWsService: MesageWsService) {}
 
   handleConnection( client: Socket ) {
+    console.log(client.handshake.headers.authentication);
+
     this.mesageWsService.registerClient(client, client.id);
     this.wss.emit('clients-updated', this.mesageWsService.getConnectedCleints());
   }
@@ -34,7 +36,7 @@ export class MesageWsGateway implements OnGatewayConnection, OnGatewayDisconnect
     // });
     
     this.wss.emit('server-message', {
-      fullName: 'payload.id',
+      fullName: payload.clientId,
       message: payload.message || 'no-message!!'
     });
   }
